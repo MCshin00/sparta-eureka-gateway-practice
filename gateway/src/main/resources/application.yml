@@ -6,15 +6,23 @@ spring:
       routes:
       # TODO order-service, product-service의 라우팅 설정을 해주세요! (여기에서 설정하면 GatewayConfig에서 설정하지 않아도 됩니다)
       # 아래는 예시입니다. 삭제 후 실제 코드 추가해주세요!
-      - id: sparta-service
-        uri: lb://sparta-service
+      - id: order-service
+        uri: lb://order-service
         predicates:
-          - Path=/sparta/**
+          - Path=/orders/create
         filters:
-          - name: [Custom Filter 이름]
-            args: # custom filter config에 들어가는 항목을 map 형식으로 설정
-              classType: sparta-class
-              lectureName: eureka-gateway
+          - name: CustomLog
+            args:
+              baseMessage: "[order-service : create]"
+              logHeaders: true
+      - id: order-service-all
+        uri: lb://order-service
+        predicates:
+          - Path=/orders/**
+      - id: product-service
+        uri: lb://product-service
+        predicates:
+          - Path=/products/**
 eureka:
   client:
     service-url:
